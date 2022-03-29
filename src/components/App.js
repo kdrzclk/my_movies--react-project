@@ -40,9 +40,13 @@ class App extends React.Component {
   deleteMovie = (movie) => {
     const newMovieList = this.state.movies.filter((m) => m.id !== movie.id);
 
-    this.setState({
+    // this.setState({
+    //   movies: newMovieList,
+    // });  // array boş olsaydı herhangi bir bilgi olmasaydı daha mantıklıydı.
+
+    this.setState((state) => ({
       movies: newMovieList,
-    });
+    })); // listeyi güncellemek için bunu kullanmak daha mantıklı.
   };
 
   render() {
@@ -50,7 +54,9 @@ class App extends React.Component {
       <div>
         <div className="container">
           <div className="row">
-            <div className="col-lg-12">{/* <SearchBar /> */}</div>
+            <div className="col-lg-12">
+              <SearchBar />
+            </div>
           </div>
           <MovieList
             movies={this.state.movies}
