@@ -2,6 +2,8 @@ import React from "react";
 import SearchBar from "./SearchBar.js";
 import MovieList from "./MovieList.js";
 import axios from "axios";
+import AddMovie from "./AddMovie.js";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 class App extends React.Component {
   state = {
@@ -19,11 +21,11 @@ class App extends React.Component {
   //   this.setState({ movies: data });
   // }
 
-  // async componentDidMount() {
-  //   const response = await axios.get("http://localhost:3002/movies");
-  //   console.log(response);
-  //   this.setState({ movies: response.data });
-  // }
+  async componentDidMount() {
+    const response = await axios.get("http://localhost:3002/movies");
+    console.log(response);
+    this.setState({ movies: response.data });
+  }
 
   // API TMDB kendi veri tabanı
   // async componentDidMount() {
@@ -44,13 +46,13 @@ class App extends React.Component {
   // }
 
   // API TMDB kendi veri tabanından bize ayırdığı kendi oluşturduğumuz liste
-  async componentDidMount() {
-    const response = await axios.get(
-      "https://api.themoviedb.org/3/list/8196753?api_key=a04a00625a04fa5e774d2a0b553b0210&language=en-US"
-    );
-    console.log(response.data.items);
-    this.setState({ movies: response.data.items });
-  }
+  // async componentDidMount() {
+  //   const response = await axios.get(
+  //     "https://api.themoviedb.org/3/list/8196753?api_key=a04a00625a04fa5e774d2a0b553b0210&language=en-US"
+  //   );
+  //   console.log(response.data.items);
+  //   this.setState({ movies: response.data.items });
+  // }
 
   // deleteMovie = (movie) => {
   //   const newMovieList = this.state.movies.filter((m) => m.id !== movie.id);
@@ -77,27 +79,27 @@ class App extends React.Component {
   //   }));
   // };
 
-  //Axios API
-  // deleteMovie = async (movie) => {
-  //   axios.delete(`http://localhost:3002/movies/${movie.id}`);
-  //   const newMovieList = this.state.movies.filter((m) => m.id !== movie.id);
-
-  //   this.setState((state) => ({
-  //     movies: newMovieList,
-  //   }));
-  // };
-
-  // Gerçek Id yetkilendirerek uzak api'den silme
+  // Axios API
   deleteMovie = async (movie) => {
-    axios.post(
-      `https://api.themoviedb.org/3/list/8196753/remove_item?media_id=${movie.id}&session_id=45b975819bd1ecdf23611a724c744fe6c06be5d1&api_key=a04a00625a04fa5e774d2a0b553b0210`
-    );
+    axios.delete(`http://localhost:3002/movies/${movie.id}`);
     const newMovieList = this.state.movies.filter((m) => m.id !== movie.id);
 
     this.setState((state) => ({
       movies: newMovieList,
     }));
   };
+
+  // Gerçek Id yetkilendirerek uzak api'den silme
+  // deleteMovie = async (movie) => {
+  //   axios.post(
+  //     `https://api.themoviedb.org/3/list/8196753/remove_item?media_id=${movie.id}&session_id=45b975819bd1ecdf23611a724c744fe6c06be5d1&api_key=a04a00625a04fa5e774d2a0b553b0210`
+  //   );
+  //   const newMovieList = this.state.movies.filter((m) => m.id !== movie.id);
+
+  //   this.setState((state) => ({
+  //     movies: newMovieList,
+  //   }));
+  // };
 
   searchMovie = (e) => {
     // console.log(e.target.value);
@@ -107,25 +109,35 @@ class App extends React.Component {
   render() {
     let filteredMovies = this.state.movies.filter((movie) => {
       return (
-        movie.title
+        movie.name
           .toLowerCase()
           .indexOf(this.state.searchQuery.toLowerCase()) !== -1
       );
     });
     return (
-      <div>
+      <Router>
         <div className="container" style={{ width: "75%" }}>
-          <div className="row">
-            <div className="col-lg-12">
-              <SearchBar searchMovieProp={this.searchMovie} />
-            </div>
-          </div>
-          <MovieList
-            movies={filteredMovies}
-            deleteMovieProp={this.deleteMovie}
-          />
+          <Switch>
+            <Route
+              path="/"
+              render={() => (
+                <React.Fragment>
+                  <div className="row">
+                    <div className="col-lg-12">
+                      <SearchBar searchMovieProp={this.searchMovie} />
+                    </div>
+                  </div>
+                  <MovieList
+                    movies={filteredMovies}
+                    deleteMovieProp={this.deleteMovie}
+                  />
+                </React.Fragment>
+              )}
+            ></Route>
+            <Route path="/add" exact component={AddMovie} />
+          </Switch>
         </div>
-      </div>
+      </Router>
     );
   }
 }

@@ -50,11 +50,11 @@ const MovieList = (props) => {
           <div className="card mb-4 shadow-sm">
             <img
               className="card-img-top"
-              src={`https://www.themoviedb.org/t/p/w220_and_h330_face/${movie.poster_path}`}
+              src={`https://www.themoviedb.org/t/p/w220_and_h330_face/${movie.imageURL}`}
               alt="Sample Movie"
             />
             <div className="card-body">
-              <h5 className="card-title">{movie.title}</h5>
+              <h5 className="card-title">{movie.name}</h5>
               <p className="card-text">{movie.overview}</p>
               <div className="d-flex justify-content-between align-items-center">
                 <button
@@ -66,7 +66,7 @@ const MovieList = (props) => {
                 </button>
                 <h2>
                   <span className="badge badge-info text-info">
-                    {movie.vote_average}
+                    {movie.rating}
                   </span>
                 </h2>
               </div>
