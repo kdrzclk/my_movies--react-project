@@ -19,10 +19,37 @@ class App extends React.Component {
   //   this.setState({ movies: data });
   // }
 
+  // async componentDidMount() {
+  //   const response = await axios.get("http://localhost:3002/movies");
+  //   console.log(response);
+  //   this.setState({ movies: response.data });
+  // }
+
+  // API TMDB kendi veri tabanı
+  // async componentDidMount() {
+  //   const response = await axios.get(
+  //     "https://api.themoviedb.org/3/movie/popular?language=en-U&page=1&api_key=a04a00625a04fa5e774d2a0b553b0210"
+  //   );
+  //   console.log(response.data.results);
+  //   this.setState({ movies: response.data.results });
+  // }
+
+  // API TMDB kendi veri tabanından bize ayırdığı liste
+  // async componentDidMount() {
+  //   const response = await axios.get(
+  //     "https://api.themoviedb.org/3/movie/popular?language=en-U&page=1&api_key=a04a00625a04fa5e774d2a0b553b0210"
+  //   );
+  //   console.log(response.data.results);
+  //   this.setState({ movies: response.data.results });
+  // }
+
+  // API TMDB kendi veri tabanından bize ayırdığı kendi oluşturduğumuz liste
   async componentDidMount() {
-    const response = await axios.get("http://localhost:3002/movies");
-    console.log(response);
-    this.setState({ movies: response.data });
+    const response = await axios.get(
+      "https://api.themoviedb.org/3/list/8196753?api_key=a04a00625a04fa5e774d2a0b553b0210&language=en-US"
+    );
+    console.log(response.data.items);
+    this.setState({ movies: response.data.items });
   }
 
   // deleteMovie = (movie) => {
@@ -51,8 +78,20 @@ class App extends React.Component {
   // };
 
   //Axios API
+  // deleteMovie = async (movie) => {
+  //   axios.delete(`http://localhost:3002/movies/${movie.id}`);
+  //   const newMovieList = this.state.movies.filter((m) => m.id !== movie.id);
+
+  //   this.setState((state) => ({
+  //     movies: newMovieList,
+  //   }));
+  // };
+
+  // Gerçek Id yetkilendirerek uzak api'den silme
   deleteMovie = async (movie) => {
-    axios.delete(`http://localhost:3002/movies/${movie.id}`);
+    axios.post(
+      `https://api.themoviedb.org/3/list/8196753/remove_item?media_id=${movie.id}&session_id=45b975819bd1ecdf23611a724c744fe6c06be5d1&api_key=a04a00625a04fa5e774d2a0b553b0210`
+    );
     const newMovieList = this.state.movies.filter((m) => m.id !== movie.id);
 
     this.setState((state) => ({
@@ -68,7 +107,7 @@ class App extends React.Component {
   render() {
     let filteredMovies = this.state.movies.filter((movie) => {
       return (
-        movie.name
+        movie.title
           .toLowerCase()
           .indexOf(this.state.searchQuery.toLowerCase()) !== -1
       );
